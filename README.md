@@ -18,3 +18,13 @@ If you can read Chinese, welcome to this [link](https://zhuanlan.zhihu.com/p/149
 
 **Note: This project has a lot of bugs! I will fix in foresee future if I remember it. Please remind me, thank you!**
 
+2021.9.27 upd: 
+
+I will fix bugs in the future, here are my TODO list.
+
+- [x] use naive loss to fit the random dataset
+- [ ] implement the dataset interface
+- [ ] overfit the tiny sample dataset
+- [ ] implement the loss and eval(ADE, DE)
+- [ ] running on the whole dataset
+- [ ] submit result to the website https://evalai.cloudcv.org/web/challenges/challenge-page/454/leaderboard/1279
