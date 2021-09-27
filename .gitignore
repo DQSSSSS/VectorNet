@@ -1,3 +1,4 @@
 test_.py
-/old
-/model
+old/
+model/
+__pycache__
