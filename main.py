@@ -1,15 +1,15 @@
 import config
 import os
 from network.vector_net import VectorNet, VectorNetWithPredicting
-from DataLoader import *
+from dataloader.random_dataloader import *
 
-def train_model(vector_net, training_data, save_name, eval_data=None, epochs=25, learning_rate=0.001, decayed_factor=0.3):
-    data = VectorNetData(training_data)
-    train_loader = DataLoader(dataset=data, batch_size=1, shuffle=True)
+def train_model(vector_net, dataloader, save_name, is_print_eval=True, is_print_test=False, epochs=25, learning_rate=0.001, decayed_factor=0.3):
+    train_loader = dataloader.training_dataloader
+    eval_loader = dataloader.eval_dataloader
+
     vector_net = vector_net.to(config.device)
-
     optimizer = torch.optim.Adam(vector_net.parameters(), lr=learning_rate)
-    loss_func = torch.nn.MSELoss()
+    loss_func = torch.nn.MSELoss() # TODO
     for epoch in range(epochs):
         for i, data in enumerate(train_loader):
             inputs, labels = data
@@ -19,16 +19,23 @@ def train_model(vector_net, training_data, save_name, eval_data=None, epochs=25,
             loss = loss_func(outputs, labels["future"].to(config.device))
             loss.backward()
             optimizer.step()
-            print(epoch, i, loss.item())
+            if is_print_test:
+                print("epoch:", epoch, "iteration:", i, "loss function:", loss.item())
 
         if (epoch + 1) % 5 == 0:
             learning_rate *= decayed_factor
             optimizer = torch.optim.Adam(vector_net.parameters(), lr=learning_rate)
 
-            if eval_data != None:
-                # TODO
-                pass
-
+            if is_print_eval:
+                sum, t = 0, 0
+                for i, data in enumerate(eval_loader):
+                    inputs, labels = data
+                    outputs = vector_net(inputs["item_num"].to(config.device), 
+                        inputs["target_id"].to(config.device), inputs["polyline_list"])
+                    sum += loss_func(outputs, labels["future"].to(config.device))
+                    t += 1
+                sum /= t
+                print("epoch:", epoch, "the mean of loss on eval dataset is", sum)
     torch.save(vector_net, os.path.join(config.model_save_path, save_name + '.model'))
 
 
@@ -36,7 +43,7 @@ if __name__ == '__main__':
     print("now device:", config.device)
     v_len = 9
     vector_net = VectorNetWithPredicting(v_len=v_len, time_stamp_number=30)
-    training_data = get_random_data(50, v_len)
+    random_dataloader = RandomDataloader(1, 0, 0, v_len)
 
-    train_model(vector_net, training_data, "random_model")
+    train_model(vector_net, random_dataloader, "random_model", is_print_test=True, epochs=200, decayed_factor=1)
 

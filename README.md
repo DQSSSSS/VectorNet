@@ -22,9 +22,11 @@ If you can read Chinese, welcome to this [link](https://zhuanlan.zhihu.com/p/149
 
 I will fix bugs in the future, here are my TODO list.
 
-- [x] use naive loss to fit the random dataset
+- [x] implement and debug the network
+- [x] use naive loss to overfit the random dataset
+- [x] implement the evaluation(ADE, DE, ..)
+- [ ] implement the loss
 - [ ] implement the dataset interface
-- [ ] overfit the tiny sample dataset
-- [ ] implement the loss and eval(ADE, DE)
 - [ ] running on the whole dataset
 - [ ] submit result to the website https://evalai.cloudcv.org/web/challenges/challenge-page/454/leaderboard/1279
+- [ ] visualize the result
